@@ -23,6 +23,7 @@ static int opt_stretch = 0;
 static int opt_delay = 0;
 static int opt_enlarge = 0;
 static int opt_ignore_aspect = 0;
+static int opt_quick = 0;
 
 void setup_console(int t)
 {
@@ -315,6 +316,10 @@ identified:
 			delay = 0;
 		}
 
+		if (opt_quick) {
+			ret = 0;
+			goto done;
+		}
 		c = getchar();
 		switch(c)
 		{
@@ -428,6 +433,7 @@ void help(char *name)
 		   "  -k, --colorstretch  Strech (using a 'color average' resizing routine) the image to fit onto screen if necessary\n"
 		   "  -e, --enlarge       Enlarge the image to fit the whole screen if necessary\n"
 		   "  -r, --ignore-aspect Ignore the image aspect while resizing\n"
+		   "  -q, --quit          Quickly show image and quit\n"
 		   "  -s <delay>, --delay <d>  Slideshow, 'delay' is the slideshow delay in tenths of seconds.\n\n"
 		   "Input keys:\n"
 		   " r          : Redraw the image\n"
@@ -470,6 +476,7 @@ int main(int argc, char **argv)
 		{"delay",         required_argument, 0, 's'},
 		{"enlarge",       no_argument,  0, 'e'},
 		{"ignore-aspect", no_argument,  0, 'r'},
+		{"quit",          no_argument,  0, 'q'},
 		{0, 0, 0, 0}
 	};
 	int c, i;
@@ -481,7 +488,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	while((c = getopt_long_only(argc, argv, "hcauifks:er", long_options, NULL)) != EOF)
+	while((c = getopt_long_only(argc, argv, "hcauifks:erq", long_options, NULL)) != EOF)
 	{
 		switch(c)
 		{
@@ -511,6 +518,9 @@ int main(int argc, char **argv)
 				break;
 			case 'e':
 				opt_enlarge = 1;
+				break;
+			case 'q':
+				opt_quick = 1;
 				break;
 			case 'r':
 				opt_ignore_aspect = 1;
